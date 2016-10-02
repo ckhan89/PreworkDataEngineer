@@ -1,0 +1,79 @@
+Row findRow(findTime, isStart, startRow, endRow)
+{
+	if (endRow - startRow == 1)
+	{
+		if (isStart)
+		{
+			if (startRow[unix_timestamp] < findTime)
+			{
+				return endRow;
+			} else{
+				return startRow;
+			}
+		} else {
+			if (endRow[unix_timestamp] > findTime)
+			{
+				return startRow;
+			} else {
+				return endRow;
+			}
+		}
+	}
+
+	MRow = (startRow +endRow)/2;
+	if (findTime < MRow[unix_timestamp])
+	{
+		return findRow(findTime,startRow,MRow);
+	} else {
+		return findRow(findTime,MRow,endRow)
+	}
+}
+
+List<Row> findRowWithtext(searchtext, startRow, endRow)
+{
+	List <Row> list = []
+	for row = startRow -> endRow
+	{
+		if(row[name].containt(searchtext)){
+			list.add(row);
+		}
+	}
+	return list;
+}
+
+List<Row> searchFromFile(file, startTime, endTime, searchtext)
+{
+	Row firstRow = file.firstRow;
+	Row lastRow = file.lastRow;
+	if (endTime < firstRow[unix_timestamp])
+	{
+		return nil;
+	} else if (startTime > lastRow[unix_timestamp])
+	{
+		return nil;
+	} else if (startTime <= firstRow[unix_timestamp])
+	{
+		startRow = firstRow;
+		endRow = findRow(endTime,false, firstRow, lastRow)
+		return findRowWithtext(searchtext,startRow,endRow);
+	} else if (endRow >= lastRow[unix_timestamp])
+	{
+		startRow = findRow(startTime,true,firstRow,lastRow);
+		endRow = lastRow;
+		return findRowWithtext(searchtext,startRow,endRow);
+	} else {
+		startRow = findRow(startTime,true,firstRow,lastRow);
+		endRow = findRow(endTime,false, firstRow, lastRow)
+		return findRowWithtext(searchtext,startRow,endRow);
+	}
+}
+
+List<Row> searchFromFile(files, startTime, endTime, searchtext)
+{
+	List<Row> list;
+	for (int i = 0; i < files.count; ++i)
+	{
+		list.addFromList(searchFromFile(files[i],startTime,endTime,searchtext));	
+	}
+	return list;
+}
