@@ -1,6 +1,6 @@
 # PreworkDataEngineer
 ## Result Of Challenge2
- Run  chanllenge2 by python 3 to see the full result:
+ Run  chanllenge2.py by python 3 to see the full result:
 
 - number of people who are older than Mark: 1842 people
 
